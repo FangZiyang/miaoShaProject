@@ -1,6 +1,8 @@
 package com.imooc.miaoshaproject.controller;
 
 import com.imooc.miaoshaproject.controller.viewobject.UserVO;
+import com.imooc.miaoshaproject.error.BusinessException;
+import com.imooc.miaoshaproject.error.EmBusinessError;
 import com.imooc.miaoshaproject.response.CommonReturnType;
 import com.imooc.miaoshaproject.service.UserService;
 import com.imooc.miaoshaproject.service.model.UserModel;
@@ -13,16 +15,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller("/user")//用来被spring扫描到
 @RequestMapping("/user")// url地址栏的东西
-public class UserController {
+public class UserController extends BaseController{
 
     @Autowired
     UserService userService;
 
     @RequestMapping("/get")
     @ResponseBody
-    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         // 通过id 返回用户信息给前端
         UserModel userModel = userService.getUserById(id);
+
+        if (userModel == null) {
+            throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
+        }
         UserVO userVO = convertFromModel(userModel);
         return CommonReturnType.create(userVO);
     }
