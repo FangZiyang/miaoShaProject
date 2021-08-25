@@ -1,6 +1,7 @@
 package com.imooc.miaoshaproject.controller;
 
 import com.imooc.miaoshaproject.controller.viewobject.UserVO;
+import com.imooc.miaoshaproject.response.CommonReturnType;
 import com.imooc.miaoshaproject.service.UserService;
 import com.imooc.miaoshaproject.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
@@ -19,10 +20,11 @@ public class UserController {
 
     @RequestMapping("/get")
     @ResponseBody
-    public UserVO getUser(@RequestParam(name = "id") Integer id) {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) {
         // 通过id 返回用户信息给前端
         UserModel userModel = userService.getUserById(id);
-        return convertFromModel(userModel);
+        UserVO userVO = convertFromModel(userModel);
+        return CommonReturnType.create(userVO);
     }
 
     private UserVO convertFromModel(UserModel userModel) {
