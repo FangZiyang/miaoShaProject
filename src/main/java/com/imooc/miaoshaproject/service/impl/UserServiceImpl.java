@@ -1,6 +1,7 @@
 package com.imooc.miaoshaproject.service.impl;
 
 import com.imooc.miaoshaproject.dao.UserDOMapper;
+import com.imooc.miaoshaproject.dao.UserPasswordDOMapper;
 import com.imooc.miaoshaproject.dataobject.UserDO;
 import com.imooc.miaoshaproject.dataobject.UserPasswordDO;
 import com.imooc.miaoshaproject.service.UserService;
@@ -19,10 +20,13 @@ public class UserServiceImpl implements UserService {
     UserDOMapper userDOMapper;
 
     @Autowired
-    UserPasswordDO userPasswordDO;
+    UserPasswordDOMapper userPasswordDOMapper;
     @Override
     public UserModel getUserById(Integer id) {
         UserDO userDO = userDOMapper.selectByPrimaryKey(id);
+        if (userDO == null) return null;
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(id);
+        return convertFromDataObject(userDO, userPasswordDO);
     }
 
     private UserModel convertFromDataObject(UserDO userDO, UserPasswordDO userPasswordDO) {
