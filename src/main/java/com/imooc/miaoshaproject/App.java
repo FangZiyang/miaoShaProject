@@ -22,9 +22,6 @@ public class App {
     @Autowired
     private UserDOMapper userDOMapper;
 
-//    @Autowired
-//    private UserPasswordDOMapper userPasswordDOMapper;
-
     @RequestMapping("/")
     public String home() {
         System.out.println("huan ying hui jia");
