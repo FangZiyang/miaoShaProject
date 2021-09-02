@@ -4,12 +4,15 @@ import com.imooc.miaoshaproject.dao.UserDOMapper;
 import com.imooc.miaoshaproject.dao.UserPasswordDOMapper;
 import com.imooc.miaoshaproject.dataobject.UserDO;
 import com.imooc.miaoshaproject.dataobject.UserPasswordDO;
+import com.imooc.miaoshaproject.error.BusinessException;
+import com.imooc.miaoshaproject.error.EmBusinessError;
 import com.imooc.miaoshaproject.service.UserService;
 import com.imooc.miaoshaproject.service.model.UserModel;
 import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.jws.soap.SOAPBinding;
 
@@ -21,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserPasswordDOMapper userPasswordDOMapper;
+
     @Override
     public UserModel getUserById(Integer id) {
         UserDO userDO = userDOMapper.selectByPrimaryKey(id);
@@ -38,5 +42,17 @@ public class UserServiceImpl implements UserService {
             userModel.setEncrptPassword(userPasswordDO.getEncrptPassword());
         }
         return userModel;
+    }
+
+    @Override
+    @Transactional
+    public void register(UserModel userModel) throws BusinessException {
+        if (userModel == null) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+        ValidationResult result = validator.validate(userModel);
+        if (result.isHasErrors()) {
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
+        }
     }
 }
