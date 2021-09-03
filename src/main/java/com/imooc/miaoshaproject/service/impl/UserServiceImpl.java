@@ -9,6 +9,7 @@ import com.imooc.miaoshaproject.error.EmBusinessError;
 import com.imooc.miaoshaproject.service.UserService;
 import com.imooc.miaoshaproject.service.model.UserModel;
 import org.apache.catalina.User;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,5 +55,19 @@ public class UserServiceImpl implements UserService {
         if (result.isHasErrors()) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, result.getErrMsg());
         }
+    }
+
+    @Override
+    public UserModel validateLogin(String telephone, String encrptPassword) throws BusinessException {
+        UserDO userDO = userDOMapper.selectByTelephone(telephone);
+        if(userDO == null){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        UserPasswordDO userPasswordDO = userPasswordDOMapper.selectByUserId(userDO.getId());
+        UserModel userModel = convertFromDataObject(userDO,userPasswordDO);
+        if(!StringUtils.equals(encrptPassword,userModel.getEncrptPassword())){
+            throw new BusinessException(EmBusinessError.USER_LOGIN_FAIL);
+        }
+        return userModel;
     }
 }
