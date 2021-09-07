@@ -2,6 +2,7 @@ package com.imooc.miaoshaproject.validator;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class ValidationResult {
     }
 
 
-
+//    Arrays.sort((o1, o2) -> (o1 + o2).compareTo(o2 + o1));
     public String getErrMsg() {
         return StringUtils.join(errorMsgMap.values().toArray(), ",");
     }
